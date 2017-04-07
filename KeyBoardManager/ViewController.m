@@ -68,11 +68,7 @@
             CGFloat upHeight =  CGRectGetMaxY(self.tempTextField.frame) + kbHeight - self.view.bounds.size.height;
             self.view.frame =CGRectMake(0, -upHeight - 10, self.view.bounds.size.width, self.view.bounds.size.height);
         }];
-        
-       
-        
     }
-    
 }
 
 - (void)keyboardWillHide:(NSNotification *)info {
