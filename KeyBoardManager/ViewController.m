@@ -25,6 +25,23 @@
     return YES;
 }
 
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    //移除观察者
+    //键盘将要出现
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillShowNotification object:nil];
+    //键盘已经出现
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardDidShowNotification object:nil];
+    //键盘将要消失
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillHideNotification object:nil];
+    //键盘已经消失
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardDidHideNotification object:nil];
+    
+    //键盘的frame将要改变
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillChangeFrameNotification object:nil];
+    //键盘的frame改变完毕
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardDidChangeFrameNotification object:nil];
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -58,14 +75,16 @@
     CGFloat kbHeight = [[info.userInfo objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue].size.height;
     NSLog(@"键盘高度 %f",kbHeight);
     
-
+    //获取这个textfield距离屏幕的的最大值
+    float textMaxY = CGRectGetMaxY([self.tempTextField convertRect:self.tempTextField.bounds toView:nil]);
+    
     //如果当前正在输入的textfield的最大Y值 + 键盘高度 大于 屏幕高度，就说明遮挡了，
-    if (CGRectGetMaxY(self.tempTextField.frame) + kbHeight > self.view.bounds.size.height) {
+    if (textMaxY + kbHeight > self.view.bounds.size.height) {
         
         //动画效果，为了更加好看
         [UIView animateWithDuration:.1 animations:^{
             //遮挡了，就要将屏幕上移
-            CGFloat upHeight =  CGRectGetMaxY(self.tempTextField.frame) + kbHeight - self.view.bounds.size.height;
+            CGFloat upHeight =  textMaxY + kbHeight - self.view.bounds.size.height;
             self.view.frame =CGRectMake(0, -upHeight - 10, self.view.bounds.size.width, self.view.bounds.size.height);
         }];
     }
